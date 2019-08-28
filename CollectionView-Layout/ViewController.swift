@@ -1,6 +1,6 @@
 import UIKit
 
-class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     @IBOutlet weak var collectionView: UICollectionView!
     var photoArray: [String] = []
@@ -12,12 +12,17 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         // 新しいセルを生成するためにクラスを登録する
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        collectionView.dataSource = self
+        collectionView.dataSource = self // UICollectionViewDataSource
+        collectionView.delegate = self // UICollectionViewDelegate
         
         photoArray.append("dish_1.jpg")
         photoArray.append("dish_2.jpg")
         photoArray.append("dish_3.jpg")
+        photoArray.append("dish_4.jpg")
+        photoArray.append("dish_5.jpg")
+        photoArray.append("dish_6.jpg")
         photoArray.append("fruits.jpg")
+        photoArray.append("icecream.jpg")
         
         // レイアウト
         let lineSpace: CGFloat = 5 // 行間の余白
@@ -47,7 +52,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
-        
         // UI描画の処理はメインスレッドでする
         DispatchQueue.main.async {
             let image = UIImage(named: self.photoArray[indexPath.row])
@@ -66,7 +70,40 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         return cell
     }
-
+    
+    // --------------- UICollectionViewDelegate ---------------
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("セレクト! \(indexPath)")
+    }
+    
+    // --------------- UICollectionViewDelegateFlowLayout ---------------
+    
+    // セルのサイズ
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let newCellSize: CGSize
+        if indexPath.row < 4 {
+            newCellSize = cellSize
+        } else {
+            newCellSize = CGSize(width: cellSize.width / 2, height: cellSize.width / 2)
+        }
+        return newCellSize
+    }
+    
+    // 行間
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 10
+    }
+    
+    // セル間
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 10 / 2
+    }
+    
+    // セクション間の余白
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
+    }
 
 }
 
